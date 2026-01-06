@@ -1,8 +1,8 @@
 package gtypes
 
 type User struct {
-	id       int
-	name     string
-	email    string
-	password string
+	Id       int
+	Name     string `validate:"required"`
+	Email    string `validate:"required"`
+	Password string `validate:"required"`
 }
