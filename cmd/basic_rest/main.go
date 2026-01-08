@@ -31,6 +31,7 @@ func main() {
 
 	router.HandleFunc("POST /api/createUser", rest.New(storage))
 	router.HandleFunc("GET /api/getUser/{id}", rest.GetById(storage))
+	router.HandleFunc("GET /api/getUsers", rest.GetByList(storage))
 
 	server := http.Server{
 		Addr:    cfg.Addr,

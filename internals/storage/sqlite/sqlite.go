@@ -75,12 +75,45 @@ func (s *Sqlite) GetUserById(id int64) (gtypes.User, error) {
 
 	if err != nil {
 
-		if err == sql.ErrNoRows{
-			return  gtypes.User{}, fmt.Errorf("No rows of id %s exists", fmt.Sprint(id))
+		if err == sql.ErrNoRows {
+			return gtypes.User{}, fmt.Errorf("No rows of id %s exists", fmt.Sprint(id))
 		}
 
 		return gtypes.User{}, fmt.Errorf("querry error : %w", err)
 	}
 
 	return user, nil
+}
+
+func (s *Sqlite) GetUserList() ([]gtypes.User, error) {
+	stmt, err := s.Db.Prepare("SELECT * FROM user")
+
+	if err != nil {
+		return []gtypes.User{}, err
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+
+	if err != nil {
+		return []gtypes.User{}, err
+	}
+
+	defer rows.Close()
+
+	var users []gtypes.User
+
+	for rows.Next() {
+		var user gtypes.User
+
+		err := rows.Scan(&user.Id, &user.Name, &user.Email, &user.Password)
+
+		if err != nil {
+			return []gtypes.User{}, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }
