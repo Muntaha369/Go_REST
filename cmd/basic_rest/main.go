@@ -25,11 +25,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	slog.Info("Storage Initialized", slog.String("env",cfg.Env))
+	slog.Info("Storage Initialized", slog.String("env", cfg.Env))
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/getUser", rest.New(storage))
+	router.HandleFunc("POST /api/createUser", rest.New(storage))
+	router.HandleFunc("GET /api/getUser/{id}", rest.GetById(storage))
 
 	server := http.Server{
 		Addr:    cfg.Addr,

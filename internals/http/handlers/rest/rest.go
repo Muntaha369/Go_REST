@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/Muntaha369/Go_REST/internals/storage"
 	gtypes "github.com/Muntaha369/Go_REST/internals/types"
@@ -42,11 +44,34 @@ func New(storage storage.Storage) http.HandlerFunc {
 			user.Password,
 		)
 
-		if err != nil{
+		if err != nil {
 			response.WriteJson(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		response.WriteJson(w, http.StatusCreated, map[string]int64{"id": lastId})
+	}
+}
+
+func GetById(storage storage.Storage) http.HandlerFunc{
+	return func(w http.ResponseWriter, r *http.Request){
+		id := r.PathValue("id")
+		slog.Info("getting student", slog.String("id", id))
+
+		intId, err := strconv.ParseInt(id, 10, 64)
+
+		if err !=nil{
+			response.WriteJson(w, http.StatusInternalServerError, err)
+			return 
+		}
+
+		user, err := storage.GetUserById(intId)
+
+		if err != nil{
+			response.WriteJson(w, http.StatusInternalServerError, err)
+			return 
+		}
+
+		response.WriteJson(w, http.StatusOK, user)
 	}
 }

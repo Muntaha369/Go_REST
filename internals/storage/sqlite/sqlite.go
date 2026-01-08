@@ -2,8 +2,10 @@ package sqlite
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/Muntaha369/Go_REST/internals/config"
+	gtypes "github.com/Muntaha369/Go_REST/internals/types"
 	_ "modernc.org/sqlite"
 )
 
@@ -56,4 +58,29 @@ func (s *Sqlite) CreateUser(name string, email string, password string) (int64, 
 	}
 
 	return lastid, nil
+}
+
+func (s *Sqlite) GetUserById(id int64) (gtypes.User, error) {
+	stmt, err := s.Db.Prepare("SELECT * FROM user WHERE id = ? LIMIT 1")
+
+	if err != nil {
+		return gtypes.User{}, err
+	}
+
+	defer stmt.Close()
+
+	var user gtypes.User
+
+	err = stmt.QueryRow(id).Scan(&user.Id, &user.Name, &user.Email, &user.Password)
+
+	if err != nil {
+
+		if err == sql.ErrNoRows{
+			return  gtypes.User{}, fmt.Errorf("No rows of id %s exists", fmt.Sprint(id))
+		}
+
+		return gtypes.User{}, fmt.Errorf("querry error : %w", err)
+	}
+
+	return user, nil
 }
