@@ -7,12 +7,13 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Muntaha369/Go_REST/internals/storage"
 	gtypes "github.com/Muntaha369/Go_REST/internals/types"
 	"github.com/Muntaha369/Go_REST/internals/utils/response"
 	"github.com/go-playground/validator/v10"
 )
 
-func New() http.HandlerFunc {
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var user gtypes.User
@@ -35,6 +36,17 @@ func New() http.HandlerFunc {
 			return
 		}
 
-		response.WriteJson(w, http.StatusCreated, map[string]string{"success": "ok"})
+		lastId, err := storage.CreateUser(
+			user.Name,
+			user.Email,
+			user.Password,
+		)
+
+		if err != nil{
+			response.WriteJson(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		response.WriteJson(w, http.StatusCreated, map[string]int64{"id": lastId})
 	}
 }
