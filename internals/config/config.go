@@ -31,10 +31,10 @@ func Mustload() *Config {
 	if configPath == "" {
 		//IF Config path is not mentioned before running the program Check if its mentioned in the flags
 		flags := flag.String("config", "", "path to config") // first field mendtions which flag to read second sets the defaoult value if no path mentioned third random text
-		//The above flags variable store the value of the flag mentioned in the Terminal while running
+		//The above flags variable return the address of variables that store the value of the flag mentioned in the Terminal while running
 		flag.Parse() //This Parses the flag (Parsing differs based on the usecases it can be done to parse the struct or object to json for making api calls for this case it is diffrent) so the operation can be done
 
-		configPath = *flags 
+		configPath = *flags // it gets the value at the address where flag is mentioned in the terminal while runnnig the program
 
 		if configPath == "" {
 			log.Fatal("Config path is not set")
@@ -45,9 +45,9 @@ func Mustload() *Config {
 		log.Fatalf("config file does not exist: %s", configPath)
 	}
 
-	var cfg Config
+	var cfg Config // creates the cfg of Config type struct
 
-	err := cleanenv.ReadConfig(configPath, &cfg)
+	err := cleanenv.ReadConfig(configPath, &cfg) // it adds the value in cfg struct from the config path
 	
 	if err != nil {
 		log.Fatal("Can't read config file:", err.Error())
