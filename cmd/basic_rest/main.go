@@ -19,7 +19,7 @@ import (
 func main() {
 	cfg := config.Mustload() //gets the all the variables return from the config.go file
 
-	storage, err := sqlite.New(cfg) //creates a db file at the mentioned path in cfg
+	storage, err := sqlite.New(cfg) //it gets all the method from the new function to create and read users
 
 	if err != nil {
 		log.Fatal(err)
@@ -29,9 +29,9 @@ func main() {
 
 	router := http.NewServeMux() //its creates a router which help to identify which handler to serve
 
-	router.HandleFunc("POST /api/createUser", rest.New(storage))      //routes
-	router.HandleFunc("GET /api/getUser/{id}", rest.GetById(storage)) //routes
-	router.HandleFunc("GET /api/getUsers", rest.GetByList(storage))   //routes
+	router.HandleFunc("POST /api/createUser", rest.New(storage))      //routes rest.New(storage) this line is passing storage in New func mention in rest.go and storage is nothing but it just all methods which can be used to create user or read user
+	router.HandleFunc("GET /api/getUser/{id}", rest.GetById(storage)) //routes same as above
+	router.HandleFunc("GET /api/getUsers", rest.GetByList(storage))   //routes same as above
 
 	server := http.Server{ //creates a server
 		Addr:    cfg.Addr, //mentiones which server to listen on
