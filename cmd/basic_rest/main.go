@@ -27,15 +27,15 @@ func main() {
 
 	slog.Info("Storage Initialized", slog.String("env", cfg.Env))
 
-	router := http.NewServeMux() //its creates a router which help to identify which handler to serve 
+	router := http.NewServeMux() //its creates a router which help to identify which handler to serve
 
-	router.HandleFunc("POST /api/createUser", rest.New(storage)) //routes
+	router.HandleFunc("POST /api/createUser", rest.New(storage))      //routes
 	router.HandleFunc("GET /api/getUser/{id}", rest.GetById(storage)) //routes
-	router.HandleFunc("GET /api/getUsers", rest.GetByList(storage)) //routes
+	router.HandleFunc("GET /api/getUsers", rest.GetByList(storage))   //routes
 
-	server := http.Server{ //creates a server 
+	server := http.Server{ //creates a server
 		Addr:    cfg.Addr, //mentiones which server to listen on
-		Handler: router, //mentions routers to handle the request
+		Handler: router,   //mentions routers to handle the request
 	}
 
 	fmt.Println("server started")
@@ -55,7 +55,7 @@ func main() {
 
 	slog.Info("Shuting down the server")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)  //context.Background() creates an empty context with no deadline or value and it never cancels, context.withTimeout() creates a context with an deadline here it is 5 seconds 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second) //context.Background() creates an empty context with no deadline or value and it never cancels, context.withTimeout() creates a context with an deadline here it is 5 seconds
 	//*to understand context more refer pkg.go.dev
 
 	defer cancel() //it is use to clear value in case if some resource are left locked but most of the time it cancels if you are using WithTimeout() if you are using WithCancel() you need explicitly mention cancel
